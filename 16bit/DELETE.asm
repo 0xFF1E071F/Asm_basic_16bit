@@ -1,0 +1,35 @@
+TITLE SAVE: DOC VA LUU MOT CHUOI
+.MODEL SMALL
+.STACK 100H
+.DATA
+.CODE
+MAIN PROC
+
+; Nhap du lieu
+    PUSH AX
+    PUSH DI
+    CLD
+    XOR BX, BX
+    MOV AH, 1
+    INT 21H
+
+; Vong lap
+WHILE_:
+    CMP AL, 13
+    JE END_WHILE
+    CMP AL, 8
+    JNE ELSE1
+    DEC DI
+    DEC BX
+    JMP READ
+ELSE1:
+    STOSB
+    INC BX
+READ:
+    INT 21H
+    JMP WHILE_
+END_WHILE:
+    POP DI
+    POP AX
+    RET
+END MAIN        

@@ -1,0 +1,115 @@
+﻿Sửa đổi target bằng cách tiêm shellcode vào section cuối cùng
+
+Cần hanle cho file sử dụng hàm CreateFile với quyền đọc ghi
+Lấy kich thước ch tệp
+Chức năng CreateFileMapping lập map, hàm MapViewOfFile ánh
+xạ tệp vào không gian bộ nhớ và trả về một con trỏ đến đầu tệp được ánh xạ
+
+- Check tập tin đích là tập tin PE (MZ và PE)
+
+- Xác định OEP, size shellcode = shellcodeend - shellcodestart
+
+- Tìm nơi chèn shellcode - code cave
+
+- Tính toán điểm bắt đầu dwPosition và đọc đến cuối tệp bằng cách sử dụng
+kích thước của tệp dwFileSize
+- Tạo không gian lưu trữ shellcode
+
+- Loadlibrary, GetProAddress sử dụng để tự động lấy địa chỉ của hàm, tạo bộ đệm
+cho shellcode, chuyển shellcode đến buffer để sửa đổi
+
+
+
+- Copy shellcode vào code cave
+
+- Update PE file infomation
+- Set Entry point, RVA = file offset + virtual offset - raw offset
+
+
+
+DWORD dwBytesWritten;
+	dwBytesWritten = SetFilePointer(
+	hFile, // must have GENERIC_READ and/or GENERIC_WRITE
+	dwFileSize,// + dwShellcodeSize, // do not move pointer
+	NULL, // hFile is not large enough in needing this pointer
+	FILE_BEGIN);
+	BOOL	bErrorFlag = WriteFile( 
+                    hFile,				 // open file handle
+					lpFile,      // start of data to write
+                    dwShellcodeSize,	 // number of bytes to write
+                    NULL,	 // number of bytes that were written
+					NULL);
+	CloseHandle(hFile);
+
+	//FlushViewOfFile(lpFile, dwFileSize + dwShellcodeSize );
+    // update PE file information
+	pish->SizeOfRawData += dwShellcodeSize;
+    pish->Misc.VirtualSize += dwShellcodeSize;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Mở file
+Lấy kích thước file
+Ánh xạ file lên bộ nhớ
+	Kiểm tra cấu trúc PE
+Lấy OEP, Size shell code
+	Tìm cave code
+Load dll API cần nhờ vào LoadLibrary và GetProcAddress
+Tạo bộ đệm cho Shellcode
+Copy shellcode vào bộ đệm để chỉnh sửa
+Chỉnh sửa offset địa chỉ hàm
+Chỉnh sửa offset địa chỉ OEP
+Copy shellcode vào code cave
+Cập nhật thông tin PE file
+Set entry point, RVA
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

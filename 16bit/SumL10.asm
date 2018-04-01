@@ -1,0 +1,68 @@
+TITLE Tong Thap Phan
+.MODEL SMALL
+.STACK 100H
+.DATA
+    NUM1 DW 0
+    NUM2 DW 0
+    MSG1 DB '?$'
+    MSG2 DB 13, 10, 'TONG CUA $'
+    MSG3 DB ' VA $'
+    MSG4 DB ' LA $'
+.CODE
+
+MAIN PROC
+    MOV AX, @DATA
+    MOV DS, AX
+    
+    ; INPUT NUM1
+    MOV AH, 9
+    LEA DX, MSG1
+    INT 21H
+    CALL INPUT_PROC
+    MOV AX, NUM2
+    MOV NUM1, AX
+    
+    ;INPUT NUM2
+    CALL INPUT_PROC
+    MOV AX, NUM1
+    ADD AX, NUM2
+    PUSH AX
+    
+SUM_:
+    LEA DX, MSG2
+    MOV AH, 9
+    INT 21H
+    MOV AH, 2
+    OR NUM1, 30H
+    MOV DX, NUM1
+    INT 21H
+    MOV AH, 9
+    LEA DX, MSG3
+    INT 21H
+    MOV AH, 2
+    OR NUM2, 30H
+    MOV DX, NUM2 
+    INT 21H
+    MOV AH, 9
+    LEA DX, MSG4
+    INT 21H
+    MOV AH, 2
+    POP BX
+    MOV DX, BX
+    OR DX, 30H
+    INT 21H
+       
+MAIN ENDP
+
+INPUT_PROC PROC
+    
+    MOV BX, 0
+    MOV AH, 1
+    INT 21H
+    MOV NUM2, 0
+    AND AX, 000FH
+    MOV NUM2, AX
+    RET
+    
+INPUT_PROC ENDP
+END MAIN 

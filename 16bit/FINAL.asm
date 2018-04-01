@@ -1,0 +1,146 @@
+.MODEL SMALL
+.STACK 100H
+.DATA
+
+MSG DB 13, 10, 'FILE & FOLDER:', 13, 10, '$'
+MSG1 DB 13, 10, 'KHONG TIM THAY$'
+MSG2 DB 13, 10, 'LINK:$'
+MSG3 DB 13, 10, 'FOLDER:$'
+MSG4 DB 13, 10, 'KHONG TIM DUOC FOLDER$'
+ENTER DB 13, 10, '$'
+LINK DB 30 DUP(0)
+TENTM DB 30 DUP(0)
+TEN DB "*.*", 0
+DTA DB 43 DUP(0)
+SIZE_LINK DW 0
+SIZE_TEN DW 0
+
+.CODE
+MAIN PROC
+    MOV AX, @DATA
+    MOV DS, AX
+    MOV ES, AX
+    
+    MOV AH, 9
+    LEA DX, MSG2
+    INT 21H
+    
+    CALL NHAP_LINK
+    ; VIET CODE LUU TEN THU MUC CHA
+    
+    CALL SHOW_FILE 
+    CALL SEARCH
+    ; NEU TIM DUOC THI LAY RA TEN THU MUC TU STACK
+    
+    
+MAIN ENDP
+
+; HIEN THI FILE, FOLDER
+SHOW_FILE PROC
+    XOR CX, CX
+    LEA DX, DTA
+    MOV AH, 1AH
+    INT 21H
+    
+    LEA DX, LINK
+    MOV CX, 3FH
+    MOV AH, 4EH
+    INT 21H
+    JC ERROR
+    
+    MOV AH, 9
+    LEA DX, MSG
+    INT 21H
+WHILE_S1:
+    MOV AH, 4FH
+    INT 21H
+    JC FINISH
+    
+    MOV AH, 9
+    LEA DX, ENTER
+    INT 21H
+    XOR DX, DX
+    LEA DX, DTA
+    ADD DX, 1EH
+    MOV SI, DX
+    MOV BYTE PTR [SI + 13], '$'
+    INT 21H
+    
+    MOV CX, 13
+LAP_S1:
+    MOV [SI], 0
+    INC SI
+    LOOP LAP_S1
+    MOV CX, 3FH
+    
+    JMP WHILE_S1
+ERROR_S1:
+    MOV AH, 9
+    LEA DX, MSG1
+    INT 21H
+    
+FINISH:
+SHOW_FILE ENDP
+
+; TIM CAC THU MUC CON
+; VA DAY TEN CAC THU MUC CON QUET DUOC VAO STACK
+SEARCH PROC
+    XOR CX, CX
+    LEA DX, DTA
+    MOV AH, 1AH
+    INT 21H
+    
+    LEA DX, LINK
+    MOV CX, 10H
+    MOV AH, 4EH
+    INT 21H
+    JC ERROR
+    
+    MOV AH, 9
+    LEA DX, MSG3
+    INT 21H
+    
+WHILE_CH1:
+    MOV AH, 4FH
+    INT 21H
+    JC FINISH
+    
+    MOV CX, 13
+LAP_CH2:
+    PUSH [SI]
+    MOV [SI], 0
+    INC SI
+    LOOP LAP_CH2
+    
+    MOV CX, 3FH
+    JMP WHILE_CH1
+    
+ERROR:
+    MOV AH, 9
+    LEA DX, MSG4
+    INT 21H
+    
+FINISH_CH:
+SEARCH ENDP
+
+; NHAP LINK
+NHAP_LINK PROC
+    MOV AH, 9
+    LEA DX, MSG2
+    INT 21H
+    LEA SI, LINK
+    XOR BX, BX
+    MOV AH, 1
+LOOP_:
+    INT 21H
+    CMP AL, 13
+    JE EXIT_
+    MOV BYTE PTR [SI], AL
+    INC SI
+    INC BX
+    JMP LOOP_
+EXIT_:
+    MOV SIZE_LINK, BX
+    MOV BYTE PTR [SI], '$'
+    RET
+NHAP_LINK ENDP

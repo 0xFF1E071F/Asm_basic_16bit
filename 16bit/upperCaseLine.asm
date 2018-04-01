@@ -1,0 +1,24 @@
+TITLE TRAINNING: UPPERCASE LINE
+.MODEL SMALL
+.STACK 100H
+.DATA
+MSG1 DB 'NHAP CHU HOA: $'
+.CODE
+MAIN PROC
+    MOV AX, @DATA
+    MOV DS, AX
+    LEA DX, MSG1
+    MOV AH, 9
+    INT 21H
+    
+    MOV AH, 1
+    INT 21H
+    
+    MOV AH, 2
+    MOV DL, AL    
+    ADD DL, 20H
+    INT 21H
+    
+    MOV AH, 4CH
+    INT 21H
+END MAIN

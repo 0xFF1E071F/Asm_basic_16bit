@@ -1,0 +1,85 @@
+﻿.MODEL SMALL, C
+
+.STACK
+
+.DATA
+    FILE_SPEC DB "*.*", 0
+    DTA DB 128H DUP(0)
+    ENTER DB 13,10,0, '$'
+.CODE
+MAIN PROC
+    MOV AX, @DATA
+    MOV DS, AX
+    MOV DX, OFFSET DTA
+    MOV AH, 1AH
+    INT 21H  
+     
+    ; THUC HIEN NOI CHUOI VAO 1 THANH GHI
+    ; PUSH THANH GHI: DIA CHI PATH FILE 
+    ; REP MOVSB
+    ; PUSH DI ; C:\A\*.*
+    
+    PUSH OFFSET FILE_SPEC
+    ; truyen bien toan cuc 
+    CALL SEARCH
+    
+
+    MOV AH, 1
+    INT 21H   
+    MOV AX, 4C00H
+    INT 21H 
+    
+    
+MAIN ENDP
+
+
+SEARCH PROC
+    
+    ; KHAI BAO VUNG NHO LUU BIEN CUC BO
+  
+    PUSH BP
+    MOV BP, SP  
+    PUSH SI 
+    MOV SI, SS:[BP + 4H]
+    MOV DX, OFFSET DS:[SI] 
+    
+    ;MOV DX,OFFSET FILE_SPEC
+    MOV CX, 3FH
+    MOV AH, 4EH
+    INT 21H
+    JC  QUIT
+
+PRINT_NAME:  
+      
+    MOV AH, 9 
+    
+    XOR DX, DX
+    LEA DX, ENTER
+    INT 21H
+    
+    XOR DX, DX
+    LEA DX, DTA
+    ADD DX, 1EH 
+    MOV SI, DX
+    MOV [SI + 14], '$'
+    INT 21H
+    ;PUSH SI 
+    ; KIEM TRA CO PHAI LA FILE HAY THU MUC
+    ;XOR DX, DX   
+    ; NEU THU MUC THI NOI PATH
+
+    PUSH DI
+    ; ROI PUSH PATH ; CALL SEARCH
+    ;CALL SEARCH
+   
+    MOV DX, OFFSET DS:[SI] 
+    MOV CX, 3FH
+    MOV AH, 4FH
+    INT 21H
+    JNC PRINT_NAME
+QUIT:  
+    POP SI
+    MOV SP, BP
+    POP BP
+    RET
+SEARCH ENDP

@@ -1,0 +1,30 @@
+TITLE 10 X 10
+.MODEL SMALL
+.STACK 100H
+.DATA
+   STAR DB '*$'
+.CODE
+MAIN PROC
+    MOV CX, 10
+    MOV BX, 10
+LOOP_1:
+LOOP_2:
+    MOV AH, 2
+    MOV DL, STAR
+    INT 21H    
+    LOOP LOOP_2
+    
+    MOV CX, 10
+    MOV AH, 2
+    MOV DL, 13
+    INT 21H
+    MOV DL, 10
+    INT 21H
+    
+    SUB BX, 1
+    CMP BX, 0
+    JG LOOP_1
+    JE END
+END:
+    
+END MAIN

@@ -1,0 +1,165 @@
+﻿Đưa vào:
+
+AH: 4E tên của hàm xử lý 
+	- Hàm này là hàm tìm file đầu tiên phù hợp
+CX: Thuộc tính trong quá trình tìm kiếm
+	- Có thể tìm kiếm các file đã nén, file hệ thống, file chỉ đọc, bị ẩn, tên phân vùng, thư mục con
+DX: Trỏ đến tên của nơi thực thi
+
+Trả về:
+
+AX: Nếu không tìm được hoặc lỗi thì cờ CF sẽ bật
+DTA: Giá trị được trả về được biểu diễn dưới khung dạng
+	- 15: Thuộc tính của những file tìm được
+	- 16: Thời gian của file
+	- 1A: Kích thước của file
+	- 1E: Tên file và phần mở rộng
+Bài toán 2:
+	So sánh giá trị 15h với 1 của tên hiện tại:
+		Nếu bằng thì sửa String link = String link cũ + tên thư mục
+			=> Tiến hành vào đường link mới duyệt tên file
+			=> Trả lại giá trị của String link để quay về thư mục cha và tiến hành duyệt tiếp
+	Lọc ra các file subdirectory
+
+	Hàm nhập link
+	Hàm 
+
+
+
+
+
+
+
+1. Viết chương trình show ra các file và folder trong đường dẫn
+người dùng nhập vào
+2. Tìm xem có bao nhiêu thư mục con, và vào các thư mục con này tìm kiếm file
+Tìm kiếm file trong thư mục hiện tại và trong các thư mục cons
+Lọc ra các thư mục con
+ĐẾM SỐ THƯ MỤC CON GÁN = N
+Đẩy tên của thư mục con quét được vào stack
+3. MAIN
+Gọi hàm nhập link
+	Lưu tên thư mục cha
+	TENTM = LINK
+(1) Gọi hàm hiển thị tất cả các file và thư mục
+Gọi hàm tìm các thư mục con và đẩy tên chúng vào stack
+Lấy ra tên của thư mục con trong stack
+FOR(N LẦN)
+{
+	Tạo String link mới =  string link của thư mục cha + tên tên thư mục con	
+	LINK = LINK + SUBLINK	
+	Gọi lại chương trình hiển thị tất cả các file và thư mục (1)
+	Trả lại giá trị link thư mục gốc (lấy lại tên thư mục cha từ biến father)
+	LINK = TENTM
+}Và tìm ở thư mục con tiếp theo (Tạo đường dẫn mới)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAIN(){
+	NHAP_LINK()
+	SEARCH()
+	
+}
+SEARCH(){
+	1.Duyệt tất cả các file theo LINK
+		Hàm 4E nếu cờ CF bật nhảy đến Error
+		PUSH LINK
+		PUSH DTA
+		1.2 Nếu gặp folder
+ 				// Tạo link mới
+				Hiển thị tên folder
+				LINK = LINK + tên folder
+				call SEARCH()
+		1.3 Nếu gặp file
+			Hiển thị tên file
+			CX = LINK
+while(){
+	LAP:
+		Hàm 4F (Cần DTA của hàm 4E trả về)
+			
+			pop link
+			; PUSH LINK
+		1.1 Nếu không tìm được file và folder
+			POP LINK
+			POP DTA
+			JMP LAP		
+		1.2 Nếu gặp folder
+ 			// Tạo link mới
+				PUSH LINK
+				LINK = LINK + tên folder
+				CALL SEARCH()
+		1.3 Nếu gặp file
+			Hiển thị tên file
+			JMP LAP		
+}
+Error: Không có file nào
+Kết thúc:
+Quay về màn hình DOS			
+}
+
+NHAP_LINK(){
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
